@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="app">
+		<div v-bind:title='message'>鼠标悬停上去试试</div>
+	</div>
+
+	<div id="app2">
+		<span v-if='seen'>看得见么?</span>
+    </div>
+
+    <div id="app3">
+    	<ol>
+    		<li v-for='todo in todos'>
+    			{{ todo.text }}
+    		</li>
+    	</ol>
+    </div>
+
+    <div id="app4">
+    	<p>{{ message4 }}</p>
+    	<button v-on:click="reverseWord">reverse</button>
+    </div>
+
+    <div id="app5">
+    	<p>{{ message5 }}</p>
+    	<input type="text" v-model="message5">
+    </div>
+
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+	var app = new Vue({
+		el:'#app',
+		data:{
+			message:'页面加载于'+new Date()
+		}
+	});
+
+    var app2=new Vue({
+    	el:'#app2',
+    	data:{
+    		seen:false
+    	}
+    })
+
+    var app3= new Vue({
+    	el:'#app3',
+    	data:{
+    		todos:[
+    		      { text: '学习 JavaScript' },
+			      { text: '学习 Vue' },
+			      { text: '整个牛项目' }
+
+    		]
+    	}
+    })
+
+    var app4=new Vue({
+    	el:'#app4',
+    	data:{
+    		message4:'hello vue.js!'
+    	},
+    	methods:{
+    		reverseWord:function(){
+    			this.message4=this.message4.split('').reverse().join('')
+    		}
+    	}
+    })
+
+    var app5=new Vue({
+    	el:'#app5',
+    	data:{
+    		message5:'hello vue.js!'
+    	},
+    })
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
