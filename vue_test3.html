@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<style>
+/*     .fade-enter-active, .fade-leave-active {
+  transition: opacity 2s
+    }
+    .fade-enter, .fade-leave-active {
+      opacity: 0
+    } */
+ /*    .fade-enter-active{
+        color: red;
+    } */
+
+    .fade-enter-active{
+        transition: opacity 2s;
+    }
+    .fade-enter{
+        opacity: 0;
+    }
+
+    .fade-leave-active{
+        transition: opacity 2s;
+    }
+
+    .fade-leave-active{
+        opacity: 0;
+    }
+</style>
+<body>
+	<div id="app">
+       <button @click="show=!show">click me!</button>
+       <transition name="fade" mode="out-in">
+             <p v-show="show">hello vue!</p>
+       </transition>
+
+	</div>
+
+
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el:'#app',
+        data:{
+            show:true
+        }
+    })
+
+
+    // Vue.component('my-com',{
+    //     props:['msg'],
+    //     template:"<button>{{msg}}</button>",
+    // })
+    // var app = new Vue({
+    //     el:'#app',
+    //     data:{
+    //         msg:"qwerrttyy"
+    //     }
+
+    // });
+
+
+    // var data={msg:1};
+    // Vue.component('my-com',{
+    //     template:"<button v-on:click='msg += 1'>{{msg}}</button>",
+    //     data:function(){
+    //             return data;
+    //         }
+    // })
+    // var app = new Vue({
+    //     el:'#app',
+
+    // });
+    // var child = {
+    //     template:"<li>你好世界！</li>",
+    // };
+    // new Vue({
+    //     el:'#app',
+    //     components:{
+    //         'my-com':child
+    //     }
+    // });
+
+
+    // new Vue({
+    //   // ...
+    //   components: {
+    //     // <my-component> 将只在父模板可用
+    //     'my-component': Child
+    //   }
+    // })
+
+
+
+
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>TODOlist</title>
+</head>
+<style>
+#demo{
+    width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    border: 2px solid #3c7cb3;
+    padding: 40px 0  50px;
+}
+#demo .title{
+    font-size: 50px;
+    text-align: center;
+    font-weight: bold;
+}
+.content{
+    height: 40px;
+    width: 400px;
+    font-size: 22px;
+    line-height: 40px;
+}
+.edit_content{
+    height: 30px;
+    font-size: 22px;
+}
+button{
+    height: 45px;
+    width: 80px;
+    font-size: 22px;
+    border-radius: 6px;
+    outline: none;
+
+}
+.lists{
+    width: 484px;
+    margin: 40px auto;
+}
+.detail{
+    margin: 10px 0 0 0;
+    padding-bottom:10px;
+    font-size: 22px;
+    text-align: left;
+    text-indent: 10px;
+    line-height: 40px;
+    border-bottom: 1px solid grey;
+}
+.checkbox{
+    height:20px;
+    width: 20px;
+}
+.done{
+    text-decoration: line-through;
+    color: grey;
+    font-style: italic;
+}
+.del,.edit,.ok{
+    width:50px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 22px;
+    background: #cbc3c3;
+    margin: 0px 5px;
+}
+.footer{
+    text-align: left;
+}
+.footer p{
+    display:inline-block;
+    float: left;
+    font-size: 14px;
+    margin: 10px 4px;
+    cursor: pointer;
+    padding: 4px;
+}
+.footer p:first-child{
+    margin: 10px 110px 10px 4px;
+    cursor: default;
+}
+.footer p:last-child{
+    float: right;
+    margin: 10px 4px;
+}
+.clicked{
+    border: 1px solid #48a7c6;
+    color: #48a7c6;
+}
+
+
+</style>
+<body>
+
+<div id="demo">
+    <div class="title">TODOlist</div>
+    <input class="content" type="text" v-model="content" placeholder="请输入待办事宜~~~">
+    <button @click="add">添加</button>
+    <div class="lists">
+        <p v-for="(list,index) in lists" class="detail">
+            <input type="checkbox" v-model="list.done" class="checkbox">
+            <span v-show="!list.edit" v-bind:class="{done :list.done}">{{index+1}}、{{list.content}}</span>
+            <input v-show="list.edit" class="edit_content" type="text" v-model="list.content">
+            <button v-show="!list.edit" class="del" v-on:click="lists.splice(index,1)">删除</button>
+            <button v-show="!list.edit" class="edit" v-on:click="list.edit=true">编辑</button>
+            <button v-show="list.edit" class="ok" v-on:click="list.edit=false">确定</button>
+        </p>
+        <div class="footer">
+            <p>{{ lists | get_item_left }}  items left</p>
+
+            <p v-on:click="clked(0)" v-bind:class="{clicked:clicked[0]}" class="all">All</p>
+            <p v-on:click="clked(1)" v-bind:class="{clicked:clicked[1]}" class="active">Active</p>
+            <p v-on:click="clked(2)" v-bind:class="{clicked:clicked[2]}" class="complete">Completed</p>
+            <p class="clear">Clear</p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script>
+var todo=new Vue({
+    el:"#demo",
+    data:{
+        clicked:[true,false,false],
+        content:'',
+        lists:[{
+                    done:false,
+                    edit:false,
+                    content:"中午去吃饭!"
+                },
+                {
+                    done:false,
+                    edit:false,
+                    content:"吃完饭去拿体检报告!"
+                },
+                {
+                    done:false,
+                    edit:false,
+                    content:"下午回来继续搞vue!"
+                }]
+    },
+    methods:{
+        add:function(){
+            if(this.content!==''){
+                this.lists.push({
+                                    edit:false,
+                                    done:false,
+                                    content:this.content
+                                });
+            };
+            this.content="";
+        },
+        del:function(){
+            this.lists.splite()
+        },
+        clked:function(i){
+           this.clicked=[false,false,false];
+           this.clicked[i]=true
+        }
+    },
+    filters:{
+        get_item_left:function(val){
+          return  val.filter(function(list){
+                     return !list.done;
+                  }).length;
+        }
+    }
+})
+</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
