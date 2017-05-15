@@ -6,12 +6,13 @@
 </head>
 <style>
 #demo{
-    width: 580px;
+     padding: 20px 0  0 0;
     margin: 100px auto;
+   
+    width: 580px;
     text-align: center;
     border: 2px solid #3c7cb3;
     overflow: hidden;
-    padding: 20px 0  0 0;
 }
 .title{
     font-size: 50px;
@@ -67,7 +68,6 @@ button{
     margin-left: 30px;
 }
 .done{
-
     text-decoration: line-through;
     color: grey;
     font-style: italic;
@@ -86,7 +86,6 @@ button{
     position: absolute;
     right:6px;
     bottom:13px;
-
     font-size: 22px;
     color:red;
     margin-top:7px;
@@ -120,7 +119,6 @@ button{
     border: 1px solid #48a7c6;
     color: #48a7c6;
 }
-
 .fade-leave-active {
   transition: all 0.4s;
   transform: translateX(-300px);
@@ -132,10 +130,8 @@ button{
 .fade-enter {
   transform: translateX(-300px);
 }
-
 </style>
 <body>
-
 <div id="demo">
     <div class="title">TODOlist</div>
     <input class="content" type="text"   v-on:keyup.enter="add" v-on:keyup="fetch" v-model="content" placeholder="请输入待办事宜~~~">
@@ -210,6 +206,8 @@ var todo=new Vue({
             for(var j=0;j<len;j++){
                 this.lists[j].show=true;
             }
+            this.clicked=[false,false,false];
+            this.clicked[0]=true; 
         },
         del_show:function(index){
             this.lists[index].del=true;
@@ -233,21 +231,21 @@ var todo=new Vue({
                 }
             }             
             var len = this.lists.length;
-            for(var j=0;j<len;j++){
+            for(var k=0;k<len;k++){
                 switch(i){
                     case 0:
-                        this.lists[j].show=true
+                        this.lists[k].show=true;
                         break;
                     case 1:
-                        this.lists[j].show=true;
-                        if(this.lists[j].done==true){
-                          this.lists[j].show=false;
+                        this.lists[k].show=true;
+                        if(this.lists[k].done===true){
+                          this.lists[k].show=false;
                         }
                         break;
                     case 2:
-                        this.lists[j].show=true;
-                        if(this.lists[j].done==false){
-                           this.lists[j].show=false;
+                        this.lists[k].show=true;
+                        if(this.lists[k].done===false){
+                           this.lists[k].show=false;
                         }
                         break;
                 }
