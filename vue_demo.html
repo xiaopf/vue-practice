@@ -6,40 +6,45 @@
 </head>
 <style>
 #demo{
-    width: 600px;
+    width: 580px;
     margin: 100px auto;
     text-align: center;
     border: 2px solid #3c7cb3;
-    padding: 40px 0  50px;
+    overflow: hidden;
+    padding: 20px 0  0 0;
 }
-#demo .title{
+.title{
     font-size: 50px;
     text-align: center;
     font-weight: bold;
+    margin:0 0 40px 0;
 }
 .content{
-    height: 40px;
-    width: 400px;
+    height: 30px;
+    width: 470px;
     font-size: 22px;
     line-height: 40px;
+    text-indent: 10px;
 }
 .edit_content{
+    width: 460px;
     height: 30px;
     font-size: 22px;
 }
 button{
-    height: 45px;
+    height: 36px;
     width: 80px;
     font-size: 22px;
     border-radius: 6px;
     outline: none;
-
+    line-height: 30px;
 }
 .lists{
     width: 484px;
     margin: 40px auto;
 }
 .detail{
+    position: relative;
     margin: 10px 0 0 0;
     padding-bottom:10px;
     font-size: 22px;
@@ -49,31 +54,52 @@ button{
     border-bottom: 1px solid grey;
 }
 .checkbox{
+    position: absolute;
+    left:6px;
+    top:6px;
     height:20px;
     width: 20px;
 }
+.text{
+    width:440px;
+    cursor: pointer;
+    display:inline-block;
+    margin-left: 30px;
+}
 .done{
+
     text-decoration: line-through;
     color: grey;
     font-style: italic;
 }
 .del,.edit,.ok{
-    width:50px;
+    width:40px;
     height: 30px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 22px;
-    background: #cbc3c3;
     margin: 0px 5px;
+    background: transparent;
+    border:none;
+}
+.del{
+    position: absolute;
+    right:6px;
+    bottom:13px;
+
+    font-size: 22px;
+    color:red;
+    margin-top:7px;
 }
 .footer{
     text-align: left;
+    margin: 30px 4px 0px 4px;
 }
 .footer p{
     display:inline-block;
     float: left;
     font-size: 14px;
-    margin: 10px 4px;
+    margin: 10px 4px 0 4px;
     cursor: pointer;
     padding: 4px;
 }
@@ -85,41 +111,52 @@ button{
     float: right;
     margin: 10px 4px;
 }
+.footer:after{
+    display: table;
+    content:'';
+    clear:both;
+}
 .clicked{
     border: 1px solid #48a7c6;
     color: #48a7c6;
 }
 
+.fade-leave-active {
+  transition: all 0.4s;
+  transform: translateX(-300px);
+}
+.fade-enter-active {
+  transition: all 0.4s;
+  transform: translateX(0px);
+}
+.fade-enter {
+  transform: translateX(-300px);
+}
 
 </style>
 <body>
 
 <div id="demo">
     <div class="title">TODOlist</div>
-    <input class="content" type="text" v-model="content" placeholder="请输入待办事宜~~~">
-    <button @click="add">添加</button>
+    <input class="content" type="text"   v-on:keyup.enter="add" v-on:keyup="fetch" v-model="content" placeholder="请输入待办事宜~~~">
     <div class="lists">
-        <p v-for="(list,index) in lists" class="detail">
-            <input type="checkbox" v-model="list.done" class="checkbox">
-            <span v-show="!list.edit" v-bind:class="{done :list.done}">{{index+1}}、{{list.content}}</span>
-            <input v-show="list.edit" class="edit_content" type="text" v-model="list.content">
-            <button v-show="!list.edit" class="del" v-on:click="lists.splice(index,1)">删除</button>
-            <button v-show="!list.edit" class="edit" v-on:click="list.edit=true">编辑</button>
-            <button v-show="list.edit" class="ok" v-on:click="list.edit=false">确定</button>
-        </p>
+    <transition-group name="fade">
+        <p v-for="(list,index) in lists" v-show="list.show" v-bind:key="list" v-on:mouseover="del_show(index)" v-on:mouseout="del_hide(index)"  class="detail">        
+                <input type="checkbox" v-on:click="clked(index+3)" v-show="!list.edit" v-model="list.done" class="checkbox">
+                <span v-show="!list.edit" class="text" v-on:dblclick="list.edit=true" v-bind:class="{done :list.done}">{{index+1}}、{{list.content}}</span>
+                <input v-show="list.edit" v-on:keyup.enter="list.edit=false" class="edit_content" type="text" v-model="list.content">
+                <button v-show="list.del&&!list.edit" class="del" v-on:click="del(index)">X</button>
+        </p>  
+        </transition-group>      
         <div class="footer">
             <p>{{ lists | get_item_left }}  items left</p>
-
             <p v-on:click="clked(0)" v-bind:class="{clicked:clicked[0]}" class="all">All</p>
             <p v-on:click="clked(1)" v-bind:class="{clicked:clicked[1]}" class="active">Active</p>
             <p v-on:click="clked(2)" v-bind:class="{clicked:clicked[2]}" class="complete">Completed</p>
-            <p class="clear">Clear</p>
+            <p class="clear" v-show="clear_com" v-on:click="clear">clear</p>
         </div>
-
     </div>
-
 </div>
-
 </body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <script>
@@ -130,37 +167,107 @@ var todo=new Vue({
         content:'',
         lists:[{
                     done:false,
+                    del:false,
                     edit:false,
+                    show:true,
                     content:"中午去吃饭!"
                 },
                 {
                     done:false,
+                    del:false,
                     edit:false,
+                    show:true,
                     content:"吃完饭去拿体检报告!"
                 },
                 {
                     done:false,
+                    del:false,
                     edit:false,
+                    show:true,
                     content:"下午回来继续搞vue!"
                 }]
+    },
+    computed:{
+       clear_com:function(){
+            return  this.lists.some(function(list){
+                        return list.done;
+                    });
+       } 
     },
     methods:{
         add:function(){
             if(this.content!==''){
                 this.lists.push({
-                                    edit:false,
-                                    done:false,
-                                    content:this.content
-                                });
-            };
+                    show:true,
+                    del:false,
+                    edit:false,
+                    done:false,
+                    content:this.content
+                });
+            }
             this.content="";
+            var len = this.lists.length;
+            for(var j=0;j<len;j++){
+                this.lists[j].show=true;
+            }
         },
-        del:function(){
-            this.lists.splite()
+        del_show:function(index){
+            this.lists[index].del=true;
+        },
+        del_hide:function(index){
+            this.lists[index].del=false;
+        },
+        del:function(index){
+            this.lists.splice(index,1);
         },
         clked:function(i){
-           this.clicked=[false,false,false];
-           this.clicked[i]=true
+                
+            if(i<3){
+                this.clicked=[false,false,false];
+                this.clicked[i]=true; 
+            }else{
+                for(var j=0;j<3;j++){
+                    if(this.clicked[j]===true){
+                        i=j;
+                    }
+                }
+            }             
+            var len = this.lists.length;
+            for(var j=0;j<len;j++){
+                switch(i){
+                    case 0:
+                        this.lists[j].show=true
+                        break;
+                    case 1:
+                        this.lists[j].show=true;
+                        if(this.lists[j].done==true){
+                          this.lists[j].show=false;
+                        }
+                        break;
+                    case 2:
+                        this.lists[j].show=true;
+                        if(this.lists[j].done==false){
+                           this.lists[j].show=false;
+                        }
+                        break;
+                }
+
+            }
+        },
+        clear:function(){
+            this.lists=this.lists.filter(function(list){
+                return !list.done;
+            });
+        },
+        fetch:function(){
+            var len = this.lists.length;
+            for(var j=0;j<len;j++){
+                if(this.lists[j].content.indexOf(this.content.trim())==-1){
+                    this.lists[j].show=false;
+                }else{
+                    this.lists[j].show=true;
+                }
+            }
         }
     },
     filters:{
@@ -170,7 +277,7 @@ var todo=new Vue({
                   }).length;
         }
     }
-})
+});
 </script>
 </html>
 
